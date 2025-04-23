@@ -5,19 +5,28 @@ import { useState } from "react";
 
 function App() {
   const [students, setStudents] = useState(data);
+  const [searchTerm, setSearchTerm] = useState("");
   const [editingStudentId, setEditingStudentId] = useState(null);
   const [editFormData, setEditFormData] = useState({
     hoTen: "",
     tuoi: "",
-    lop: ""
+    lop: "",
   });
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const filteredStudents = students.filter((student) =>
+    student.hoTen.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const handleEditClick = (student) => {
     setEditingStudentId(student.id);
     setEditFormData({
       hoTen: student.hoTen,
       tuoi: student.tuoi,
-      lop: student.lop
+      lop: student.lop,
     });
   };
 
@@ -25,7 +34,7 @@ function App() {
     const { name, value } = e.target;
     setEditFormData({
       ...editFormData,
-      [name]: value
+      [name]: value,
     });
   };
 
@@ -45,7 +54,9 @@ function App() {
   };
 
   const handleDeleteStudent = (id) => {
-    const confirm = window.confirm("Bạn có chắc chắn muốn xóa sinh viên này không?");
+    const confirm = window.confirm(
+      "Bạn có chắc chắn muốn xóa sinh viên này không?"
+    );
     if (!confirm) return;
     setStudents(students.filter((item) => item.id !== id));
   };
@@ -64,8 +75,21 @@ function App() {
             Them sinh vien
           </Link>
         </div>
+
+        <div>
+          <div className="mb-4">
+            <input
+              type="text"
+              placeholder="Tìm theo tên..."
+              value={searchTerm}
+              onChange={handleSearchChange}
+              className="w-full p-2 border rounded-lg"
+            />
+          </div>
+        </div>
+
         <div className="space-y-4">
-          {students.map((item) => (
+          {filteredStudents.map((item) => (
             <div key={item.id} className="p-4 border rounded-lg">
               {editingStudentId === item.id ? (
                 <div>
