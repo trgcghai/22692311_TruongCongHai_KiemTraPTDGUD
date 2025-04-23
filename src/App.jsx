@@ -1,8 +1,18 @@
 import { Link } from "react-router-dom";
 import "./App.css";
 import data from "./data";
+import { useState } from "react";
 
 function App() {
+
+  const [students, setStudents] = useState(data);
+
+  const handleDeleteStudent = (id) => {
+    const confirm = window.confirm("Ban co chac chan muon xoa sinh vien nay khong?");
+    if (!confirm) return;
+    setStudents(students.filter((item) => item.id !== id))
+  }
+
   return (
     <div className="container mx-auto p-4">
       <div>
@@ -15,7 +25,7 @@ function App() {
           </Link>
         </div>
         <div className="space-y-4">
-          {data.map((item) => (
+          {students.map((item) => (
             <div
               key={item.id}
               className="flex items-center justify-between p-2 border rounded-lg"
@@ -26,7 +36,7 @@ function App() {
                 <p>Lop: {item.lop}</p>
               </div>
               <div>
-                <button className="text-lg bg-red-400 text-white rounded-lg px-3 py-2">
+                <button onClick={() => handleDeleteStudent(item.id)} className="text-lg bg-red-400 text-white rounded-lg px-3 py-2">
                   Xoa
                 </button>
               </div>
