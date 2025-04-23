@@ -1,10 +1,14 @@
 import { Link } from "react-router-dom";
 import "./App.css";
 import data from "./data";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
-  const [students, setStudents] = useState(data);
+  const [students, setStudents] = useState(() => {
+    const stored = localStorage.getItem("students");
+    return stored ? JSON.parse(stored) : data; // fallback từ data gốc
+  });
+
   const [searchTerm, setSearchTerm] = useState("");
   const [editingStudentId, setEditingStudentId] = useState(null);
   const [editFormData, setEditFormData] = useState({
@@ -22,6 +26,11 @@ function App() {
   const handleClassChange = (e) => {
     setSelectedClass(e.target.value); // Cập nhật lớp được chọn
   };
+
+  useEffect(() => {
+    localStorage.setItem("students", JSON.stringify(students));
+  }, [students]);
+  
 
   const filteredStudents = students.filter((student) => {
     const matchName = student.hoTen
