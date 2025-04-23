@@ -12,14 +12,25 @@ function App() {
     tuoi: "",
     lop: "",
   });
+  const [selectedClass, setSelectedClass] = useState("Tất cả");
+  const classOptions = ["Tất cả", ...new Set(students.map((s) => s.lop))];
 
   const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
+    setSearchTerm(e.target.value); // Cập nhật giá trị tìm kiếm
   };
 
-  const filteredStudents = students.filter((student) =>
-    student.hoTen.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleClassChange = (e) => {
+    setSelectedClass(e.target.value); // Cập nhật lớp được chọn
+  };
+
+  const filteredStudents = students.filter((student) => {
+    const matchName = student.hoTen
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchClass =
+      selectedClass === "Tất cả" || student.lop === selectedClass;
+    return matchName && matchClass;
+  });
 
   const handleEditClick = (student) => {
     setEditingStudentId(student.id);
@@ -76,16 +87,25 @@ function App() {
           </Link>
         </div>
 
-        <div>
-          <div className="mb-4">
-            <input
-              type="text"
-              placeholder="Tìm theo tên..."
-              value={searchTerm}
-              onChange={handleSearchChange}
-              className="w-full p-2 border rounded-lg"
-            />
-          </div>
+        <div className="mb-4 flex flex-col sm:flex-row gap-4 items-stretch sm:items-center">
+          <input
+            type="text"
+            placeholder="Tìm theo tên..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className="flex-1 p-2 border rounded-lg"
+          />
+          <select
+            value={selectedClass}
+            onChange={handleClassChange}
+            className="p-2 border rounded-lg"
+          >
+            {classOptions.map((lop, index) => (
+              <option key={index} value={lop}>
+                {lop}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="space-y-4">
